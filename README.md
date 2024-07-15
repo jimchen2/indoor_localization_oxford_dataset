@@ -14,6 +14,8 @@ Then
 
 ```
 apt update && apt upgrade -y
+sudo apt install git-lfs
+git lfs install
 sudo apt install python3 python3-venv -y
 cd
 python3 -m venv myenv
@@ -26,7 +28,8 @@ jupyter lab --no-browser --allow-root --port 80 --ip 0.0.0.0 # added no-browser
 
 The data is on HuggingFace Private repo
 ```
-git clone https://huggingface.co/datasets/jimchen2/HKUST_Magnetic_Localization
+git clone -b master https://huggingface.co/datasets/jimchen2/HKUST_Magnetic_Localization
+mv HKUST_Magnetic_Localization/ data
 ```
 
 Enter the api key.
