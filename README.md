@@ -34,12 +34,10 @@ wget "$url" -O data.zip && unzip data.zip && rm data.zip
 
 # Project Structure
 
-```
-user@debian ~/C/sequence-model-trial> ls
-prev_scripts/  README.md
-```
 
 - `prev_scripts/` : All the previous scripts (depreacted)
+- `RNN_Framework.ipynb`: Starter and example of what to do
+- `saved_models/` : Directory to save models, in `.gitignore`
 
 # Working Together
 
