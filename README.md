@@ -24,13 +24,12 @@ jupyter lab --no-browser --allow-root --port 80 --ip 0.0.0.0 # added no-browser
 
 ## Get data
 
-Go to `https://us-east-1.console.aws.amazon.com/s3` and generate a persigned url like this
-`https://jimchen4214-private.s3.us-east-1.amazonaws.com/data.zip?response-content-disposition=.....`, then
+The data is on HuggingFace Private repo
+```
+git clone https://huggingface.co/datasets/jimchen2/HKUST_Magnetic_Localization
+```
 
-```
-url="[PRESIGNED_URL]"
-wget "$url" -O data.zip && unzip data.zip && rm data.zip
-```
+Enter the api key.
 
 # Project Structure
 
