@@ -37,7 +37,7 @@ wget "$url" -O data.zip && unzip data.zip && rm data.zip
 
 - `prev_scripts/` : All the previous scripts (depreacted)
 - `RNN_Framework.ipynb`: Starter and example of what to do
-- `saved_models/` : Directory to save models, in `.gitignore`
+- `saved_models/` : Directory to save models
 
 # Working Together
 

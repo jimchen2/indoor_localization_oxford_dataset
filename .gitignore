@@ -13,7 +13,8 @@
 # Ignore all .pyd files
 *.pyd
 data/
-saved_model/
 
 runs/
 logs/
+
+best_model.pth
