@@ -1,0 +1,19 @@
+# Ignore all .ipynb_checkpoints directories
+**/.ipynb_checkpoints/
+
+# Ignore all __pycache__ directories
+**/__pycache__/
+
+# Ignore all .pyc files
+*.pyc
+
+# Ignore all .pyo files
+*.pyo
+
+# Ignore all .pyd files
+*.pyd
+data/
+saved_model/
+
+runs/
+logs/
