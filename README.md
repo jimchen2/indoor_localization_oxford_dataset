@@ -1,6 +1,6 @@
 ## Setup
 
-Do wget ....amazonaws.com...  (removed due to copyright issues)
+First wget https://s3.amazonaws.com...  (removed due to copyright issues)
 
 In each data fold, there is a raw data subfolder and a syn data subfolder, which represent the raw data collection without synchronisation but with high precise timestep, and the synchronised data but without high precise timestep.
 
@@ -116,3 +116,5 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 ## What helped in sequence processing?
 
 By making sure sliding windows doesn't overlap, we saw a massive gain.
+
+
