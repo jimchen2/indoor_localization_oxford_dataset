@@ -79,6 +79,12 @@ Note: Use os list dir instead of hardcoding data folders
 
 # **YOU MUST SPLIT DATA AT THE FILE LEVEL TO PREVENT LEAKAGE**
 
+## TENSORBOARD Logs
+
+Tensorboard logs shouldn't be put in Git, so I put them here
+
+`https://jimchen4214-public.s3.amazonaws.com/other/mag_tensorboard_logs/logs.zip`
+
 ## Goal
 
 Our goal is to predict the current `x`, `y`, `z` based on the previous all previous data(but not previous `x`, `y`, `z`)

@@ -9,8 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 import datetime
 import os
 
-
-def train(args):
+def train_and_evaluate(args):
     # Create a custom log directory name
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     log_dir = os.path.join("../../logs", f"{current_time}_input{args.input_size}_hidden{'-'.join(map(str, args.hidden_sizes))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}")
@@ -33,7 +32,7 @@ def train(args):
     writer.add_text("Target Shape", str(train_dataset[0][1].shape))
 
     # Initialize the model, loss function, and optimizer
-    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size)
+    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size, args.dropout_rate)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -99,10 +98,33 @@ def train(args):
             writer.add_scalar("Best_Val_Loss", best_val_loss, epoch + 1)
 
     print("Training completed.")
+
+    # Testing
+    print("\nStarting model evaluation...")
+    
+    # Load the best model
+    model.load_state_dict(torch.load(args.model_save_path, map_location=torch.device('cpu'), weights_only=True))
+    model.eval()
+
+    test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)
+
+    # Log test results to TensorBoard
+    writer.add_scalar("Test/Loss", test_loss, 0)
+    writer.add_scalar("Test/MSE", overall_mse, 0)
+    writer.add_scalar("Test/MAE", overall_mae, 0)
+
+    # Add text summary of test results
+    writer.add_text("Test Results", 
+                    f"Test Loss: {test_loss:.4f}\n"
+                    f"Overall MSE: {overall_mse:.4f}\n"
+                    f"Overall MAE: {overall_mae:.4f}")
+
+    print(f"Test results logged to TensorBoard in {log_dir}")
+
     writer.close()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train LSTM model for IMU data")
+    parser = argparse.ArgumentParser(description="Train and evaluate LSTM model for IMU data")
     parser.add_argument("--root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld", help="Root directory of the dataset")
     parser.add_argument("--sequence_length", type=int, default=100, help="Sequence length for LSTM input")
     parser.add_argument("--input_size", type=int, default=15, help="Number of features in IMU data")
@@ -111,34 +133,9 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size")
     parser.add_argument("--num_epochs", type=int, required=True, help="Number of epochs")
-    parser.add_argument("--dropout_rate", type=float, default=0.5, help="Dropout rate")
+    parser.add_argument("--dropout_rate", type=float, default=0.2, help="Dropout rate")
     parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_lstm_model.pth", help="Path to save the best model")
     parser.add_argument("--test_root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld_test", help="Root directory of the test dataset")
 
     args = parser.parse_args()
-    train(args)
-    print("\nStarting model evaluation...")
-
-    sequence_length = args.sequence_length
-
-    # Initialize the model
-    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size, args.dropout_rate)
-    # Load the trained model
-    model.load_state_dict(torch.load(args.model_save_path))
-    model.eval()
-    test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)
-
-    # Log test results to TensorBoard
-    test_writer.add_scalar("Test/Loss", test_loss, 0)
-    test_writer.add_scalar("Test/MSE", overall_mse, 0)
-    test_writer.add_scalar("Test/MAE", overall_mae, 0)
-
-    # Add text summary of test results
-    test_writer.add_text("Test Results", 
-                         f"Test Loss: {test_loss:.4f}\n"
-                         f"Overall MSE: {overall_mse:.4f}\n"
-                         f"Overall MAE: {overall_mae:.4f}")
-
-    print(f"Test results logged to TensorBoard in {test_log_dir}")
-
-    test_writer.close()
+    train_and_evaluate(args)
