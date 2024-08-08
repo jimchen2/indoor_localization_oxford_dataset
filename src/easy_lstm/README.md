@@ -4,6 +4,17 @@ So basically this is an intuitive file for LSTM, with minimal configurations and
 
 We basically did a really simple thing, like feed everything into LSTM model (split data on the file level)
 
+# **Improvements**
+
+## Variance Too High
+
+If we use the sliding window approach we can easily like make sure they don't overlap to make variance much smaller.
+
+## Sequence Too Short
+
+If the sequence is too short then it performs poorly, improving the sequence length to 200 or 300 drastically improves the performance.
+
+
 ## Handheld Training
 
 As we can see it quickly reaches some benchmark(though not bad)
@@ -69,33 +80,22 @@ python lstm_train.py --sequence_length 100 --hidden_sizes 128 64 --num_epochs 50
 python lstm_train.py --sequence_length 100 --hidden_sizes 32 16 --num_epochs 50
 # Complex configuration
 python lstm_train.py --sequence_length 300 --hidden_sizes 128 64 32 16 --num_epochs 75
-```
-
-More Runs with higher dropout
-
-```python
+###### With higher dropout #####
 # Longer sequence length
 python lstm_train.py --sequence_length 200 --hidden_sizes 64 32 --num_epochs 50 --dropout_rate 0.5
 
 # Single layer LSTM
 python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 50 --dropout_rate 0.5
-
-# Single layer 256 hidden size LSTM
-python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --dropout_rate 0.5
-
-# Three-layer LSTM
-python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 32 --num_epochs 50 --dropout_rate 0.5
 ```
 
 ## Tensorboard Results
 
-![Image](https://blog.jimchen.me/8e6da0ef-e749-440d-8a24-939d726c81e2-1723115444353.jpg)
-![Image](https://blog.jimchen.me/7abb9b40-a8d4-4d02-be89-81e4deaecef1-1723115455459.jpg)
-![Image](https://blog.jimchen.me/c5758ecf-8507-4470-9491-cde9d9e70611-1723115640143.jpg)
-![Image](https://blog.jimchen.me/f88b4c2b-d995-4765-86a4-2e0a36a43d83-1723115648368.jpg)
+![Image](https://blog.jimchen.me/2d5064e9-4cd2-4297-8216-36ed52e18c5c-1723134722726.jpg)
+![Image](https://blog.jimchen.me/c6142212-c6c6-4fc2-92d8-94983953e1a4-1723134741631.jpg)
+![Image](https://blog.jimchen.me/05224979-bb11-41ae-bcdc-d04cc9d25335-1723134773118.jpg)
+![Image](https://blog.jimchen.me/186cd032-eeae-4ad1-81c9-ef285b926dba-1723134801099.jpg)
 
-
-## More Training and Finetuning
+## Some More Training and Finetuning
 
 
 ```sh
@@ -107,8 +107,8 @@ python lstm_train.py --sequence_length 200 --hidden_sizes 32 --num_epochs 100 --
 # Large Hidden Size
 python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 50 --dropout_rate 0.2
 
-python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 80 --dropout_rate 0.4
 # Run it twice
+python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 80 --dropout_rate 0.4
 python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 80 --dropout_rate 0.4
 
 python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --dropout_rate 0.4
@@ -117,4 +117,19 @@ python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --
 python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 60 --dropout_rate 0.3
 python lstm_train.py --sequence_length 200 --hidden_sizes 96 --num_epochs 80 --dropout_rate 0.4
 python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 --num_epochs 75 --dropout_rate 0.4
+```
+
+## Tensorboard Results
+
+![Image](https://blog.jimchen.me/7ff27652-ad82-4d95-829c-6c928fa42811-1723135025275.jpg)
+![Image](https://blog.jimchen.me/d719be18-fdc9-459e-8b22-f9ad17f082b0-1723135041582.jpg)
+![Image](https://blog.jimchen.me/81780849-a262-4108-a9da-8e4dd6f3e8f0-1723135083765.jpg)
+![Image](https://blog.jimchen.me/567b89f7-5b8a-4acb-b2ea-d1c9e06e6ae6-1723135062276.jpg) 
+
+## Extreme Long Seq Length
+
+I also tried to increase the sequence length to 400, which resulted in 
+```
+Overall Mean Squared Error: 0.2241
+Overall Mean Absolute Error: 0.2934
 ```
