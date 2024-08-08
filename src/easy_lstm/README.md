@@ -71,6 +71,26 @@ python lstm_train.py --sequence_length 100 --hidden_sizes 32 16 --num_epochs 50
 python lstm_train.py --sequence_length 300 --hidden_sizes 128 64 32 16 --num_epochs 75
 ```
 
+More Runs with higher dropout
+
+```python
+# Longer sequence length
+python lstm_train.py --sequence_length 200 --hidden_sizes 64 32 --num_epochs 50 --dropout_rate 0.5
+
+# Single layer LSTM
+python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 50 --dropout_rate 0.5
+
+# Single layer 256 hidden size LSTM
+python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --dropout_rate 0.5
+
+# Three-layer LSTM
+python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 32 --num_epochs 50 --dropout_rate 0.5
+```
+
 ## Reports
 
-1. Val Loss: 0.3067
+![Image](https://blog.jimchen.me/8e6da0ef-e749-440d-8a24-939d726c81e2-1723115444353.jpg)
+![Image](https://blog.jimchen.me/7abb9b40-a8d4-4d02-be89-81e4deaecef1-1723115455459.jpg)
+![Image](https://blog.jimchen.me/c5758ecf-8507-4470-9491-cde9d9e70611-1723115640143.jpg)
+![Image](https://blog.jimchen.me/f88b4c2b-d995-4765-86a4-2e0a36a43d83-1723115648368.jpg)
+

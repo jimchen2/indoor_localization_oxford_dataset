@@ -13,10 +13,12 @@
 # Ignore all .pyd files
 *.pyd
 data/*
+prev_logs/
 !data/Oxford Inertial Odometry Dataset/
 data/Oxford Inertial Odometry Dataset/*
 !data/Oxford Inertial Odometry Dataset/.gitkeep
 runs/
 logs/
+logs.zip
 
 best_model.pth

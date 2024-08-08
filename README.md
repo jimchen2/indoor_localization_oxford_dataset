@@ -85,6 +85,12 @@ Tensorboard logs shouldn't be put in Git, so I put them here
 
 `https://jimchen4214-public.s3.amazonaws.com/other/mag_tensorboard_logs/logs.zip`
 
+Command to upload
+```bash
+zip -r logs.zip logs/
+aws s3 cp logs.zip s3://jimchen4214-public/other/mag_tensorboard_logs/logs.zip
+```
+
 ## Goal
 
 Our goal is to predict the current `x`, `y`, `z` based on the previous all previous data(but not previous `x`, `y`, `z`)
