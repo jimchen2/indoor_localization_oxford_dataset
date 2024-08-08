@@ -11,7 +11,7 @@ import os
 
 def train_and_evaluate(args):
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = os.path.join("../../logs", f"{current_time}_input{args.input_size}_d_model{args.d_model}_nhead{args.nhead}_layers{args.num_layers}_ff{args.dim_feedforward}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
+    log_dir = os.path.join("../../logs", f"{current_time}_d_model{args.d_model}_nhead{args.nhead}_layers{args.num_layers}_ff{args.dim_feedforward}_output{args.output_size}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}_pooling{args.pooling}_returnall{args.return_all_positions}")    
     writer = SummaryWriter(log_dir)
 
     # Load data
@@ -72,11 +72,16 @@ def train_and_evaluate(args):
         model.train()
         train_loss = 0
         for batch_idx, (imu_seq, vi_target) in enumerate(train_loader):
-            outputs = model(imu_seq)
-            loss = criterion(outputs, vi_target)
-            
+            outputs = model(imu_seq, return_all_positions=args.return_all_positions, pooling=args.pooling)
+            if args.return_all_positions:
+                loss = criterion(outputs, vi_target.unsqueeze(1).expand(-1, outputs.size(1), -1))
+            else:
+                loss = criterion(outputs, vi_target)
+                
             optimizer.zero_grad()
             loss.backward()
+
+            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
             
             train_loss += loss.item()
@@ -86,8 +91,11 @@ def train_and_evaluate(args):
         val_loss = 0
         with torch.no_grad():
             for imu_seq, vi_target in val_loader:
-                outputs = model(imu_seq)
-                val_loss += criterion(outputs, vi_target).item()
+                outputs = model(imu_seq, return_all_positions=args.return_all_positions, pooling=args.pooling)
+                if args.return_all_positions:
+                    val_loss += criterion(outputs, vi_target.unsqueeze(1).expand(-1, outputs.size(1), -1)).item()
+                else:
+                    val_loss += criterion(outputs, vi_target).item()
         
         train_loss /= len(train_loader)
         val_loss /= len(val_loader)
@@ -133,7 +141,7 @@ def train_and_evaluate(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train and evaluate Transformer model for IMU data")
     parser.add_argument("--root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld", help="Root directory of the dataset")
-    parser.add_argument("--sequence_length", type=int, default=100, help="Sequence length for Transformer input")
+    parser.add_argument("--sequence_length", type=int, default=200, help="Sequence length for Transformer input")
     parser.add_argument("--input_size", type=int, default=15, help="Number of features in IMU data")
     parser.add_argument("--d_model", type=int, default=64, help="Dimension of the model")
     parser.add_argument("--nhead", type=int, default=4, help="Number of heads in multi-head attention")
@@ -146,6 +154,8 @@ if __name__ == "__main__":
     parser.add_argument("--dropout_rate", type=float, default=0.2, help="Dropout rate")
     parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_transformer_model.pth", help="Path to save the best model")
     parser.add_argument("--test_root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld_test", help="Root directory of the test dataset")
+    parser.add_argument("--pooling", type=str, choices=['last', 'mean'], default='last', help="Pooling method for output (last or mean)")
+    parser.add_argument("--return_all_positions", action="store_true", help="Return predictions for all positions in the sequence")
 
     args = parser.parse_args()
     train_and_evaluate(args)
