@@ -141,3 +141,11 @@ Epoch [1/49], Train MSE (denorm): 0.2647, Test MSE (denorm): 3.6559
 Epoch [1/49], Train Loss: 0.2283
 Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 ```
+
+
+## A list of things I am not doing
+
+1. I am not implementing variants of LSTM or RNN because I don't think it's that meaningful, you can do it if you want
+2. I don't think pure TCN is going to work. Maybe utilizing parallel CNNs for input layer might be a good idea.
+3. I am not changing the `Bx`, `By` `Bz` into other forms because I think they yield similar results with all these models(the models automatically fits it), you can do it if you want
+4. I am using the layernorm in the start of the model instead of scaling it manually
