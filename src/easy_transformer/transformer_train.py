@@ -1,10 +1,10 @@
 import argparse
 import torch
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
-from transformer.transformer_model import IMUTransformerModel
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL ERRS ONLY
+from transformer_model import IMUTransformerModel
 from data_preprocessing import prepare_data
-from transformer.transformer_test import test_model
+from transformer_test import test_model
 from torch.utils.tensorboard import SummaryWriter
 import datetime
 import os

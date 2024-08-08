@@ -133,3 +133,5 @@ I also tried to increase the sequence length to 400, which resulted in
 Overall Mean Squared Error: 0.2241
 Overall Mean Absolute Error: 0.2934
 ```
+
+So like I cannot get it much below 0.3 with this vanilla LSTM approach

@@ -84,6 +84,8 @@ Note: Use os list dir instead of hardcoding data folders
 Tensorboard logs shouldn't be put in Git, so I put them here
 
 `https://jimchen4214-public.s3.amazonaws.com/other/mag_tensorboard_logs/logs.zip`
+`https://jimchen4214-public.s3.amazonaws.com/other/mag_tensorboard_logs/lstm_logs.zip`
+
 
 Command to upload
 ```bash
