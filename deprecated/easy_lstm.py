@@ -81,7 +81,7 @@ batch_size = 32
 num_epochs = 50
 
 # Load all sequences
-root_dir = '/home/user/Code/magnetic_localization/data/Oxford Inertial Odometry Dataset/handheld'
+root_dir = '/home/user/Code/magnetic_localization/data/Oxford Inertial Odometry Dataset/trolley'
 all_sequences = load_sequences(root_dir, sequence_length)
 
 # Split sequences into train and validation at the file level

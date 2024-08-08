@@ -47,3 +47,46 @@ Epoch [26/50], Train Loss: 0.3051, Val Loss: 0.3653
 Epoch [27/50], Train Loss: 0.3010, Val Loss: 0.3548
 ```
 
+## Tried it on Trolley
+
+```
+(mlenv) user@fedora ~/C/m/src (master)> python easy_lstm.py
+Total training samples: 3880
+Total validation samples: 376
+Total samples: 4256
+Input shape: torch.Size([100, 15])
+Target shape: torch.Size([3])
+Number of training batches: 122
+Number of validation batches: 12
+Performing mean baseline evaluation...
+Baseline Train Loss: 1.6448, Baseline Val Loss: 1.4999
+Epoch [1/50], Train Loss: 1.3684, Val Loss: 0.8679
+Epoch [2/50], Train Loss: 0.7621, Val Loss: 0.6187
+Epoch [3/50], Train Loss: 0.6352, Val Loss: 0.5016
+Epoch [4/50], Train Loss: 0.5431, Val Loss: 0.5001
+Epoch [5/50], Train Loss: 0.5197, Val Loss: 0.4581
+Epoch [6/50], Train Loss: 0.4790, Val Loss: 0.4571
+Epoch [7/50], Train Loss: 0.4949, Val Loss: 0.4723
+Epoch [8/50], Train Loss: 0.4803, Val Loss: 0.4327
+Epoch [9/50], Train Loss: 0.4594, Val Loss: 0.5488
+Epoch [10/50], Train Loss: 0.5856, Val Loss: 0.4645
+Epoch [11/50], Train Loss: 0.4688, Val Loss: 0.4248
+Epoch [12/50], Train Loss: 0.4309, Val Loss: 0.4892
+Epoch [13/50], Train Loss: 0.4448, Val Loss: 0.4438
+Epoch [14/50], Train Loss: 0.4329, Val Loss: 0.4275
+Epoch [15/50], Train Loss: 0.4282, Val Loss: 0.4330
+Epoch [16/50], Train Loss: 0.3844, Val Loss: 0.4155
+Epoch [17/50], Train Loss: 0.4858, Val Loss: 0.4628
+Epoch [18/50], Train Loss: 0.4316, Val Loss: 0.4598
+Epoch [19/50], Train Loss: 0.3948, Val Loss: 0.4880
+Epoch [20/50], Train Loss: 0.4565, Val Loss: 0.4461
+Epoch [21/50], Train Loss: 0.3910, Val Loss: 0.4228
+Epoch [22/50], Train Loss: 0.3865, Val Loss: 0.4076
+Epoch [23/50], Train Loss: 0.3608, Val Loss: 0.3852
+Epoch [24/50], Train Loss: 0.3708, Val Loss: 0.3919
+Epoch [25/50], Train Loss: 0.3967, Val Loss: 0.3775
+Epoch [26/50], Train Loss: 0.3489, Val Loss: 0.3928
+Epoch [27/50], Train Loss: 0.3337, Val Loss: 0.3806
+Epoch [28/50], Train Loss: 0.3433, Val Loss: 0.4663
+Epoch [29/50], Train Loss: 0.3408, Val Loss: 0.3440
+```

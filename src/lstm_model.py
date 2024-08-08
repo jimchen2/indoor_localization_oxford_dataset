@@ -1,5 +1,3 @@
-# model.py
-
 import torch
 
 class IMULSTMModel(torch.nn.Module):
