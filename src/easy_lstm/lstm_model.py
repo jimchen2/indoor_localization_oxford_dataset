@@ -1,10 +1,14 @@
 import torch
 
+def get_device():
+    return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 class IMULSTMModel(torch.nn.Module):
     def __init__(self, input_size, hidden_sizes, output_size, dropout_rate=0.5):
         super(IMULSTMModel, self).__init__()
         self.hidden_sizes = hidden_sizes
         self.num_layers = len(hidden_sizes)
+        self.device = get_device()
         
         # Create a list of LSTM layers
         self.lstm_layers = torch.nn.ModuleList()
@@ -25,10 +29,16 @@ class IMULSTMModel(torch.nn.Module):
         # Final fully connected layer
         self.fc = torch.nn.Linear(hidden_sizes[-1], output_size)
         
+        # Move the model to the appropriate device
+        self.to(self.device)
+        
     def forward(self, x):
+        # Ensure input is on the correct device
+        x = x.to(self.device)
+        
         # Initialize hidden and cell states
-        h = [torch.zeros(1, x.size(0), hidden_size).to(x.device) for hidden_size in self.hidden_sizes]
-        c = [torch.zeros(1, x.size(0), hidden_size).to(x.device) for hidden_size in self.hidden_sizes]
+        h = [torch.zeros(1, x.size(0), hidden_size, device=self.device) for hidden_size in self.hidden_sizes]
+        c = [torch.zeros(1, x.size(0), hidden_size, device=self.device) for hidden_size in self.hidden_sizes]
         
         # Pass through LSTM layers
         for i, (lstm, norm, dropout) in enumerate(zip(self.lstm_layers, self.norm_layers, self.dropout_layers)):
@@ -39,3 +49,7 @@ class IMULSTMModel(torch.nn.Module):
         # Pass through the fully connected layer
         out = self.fc(x[:, -1, :])
         return out
+
+    def to(self, device):
+        self.device = device
+        return super(IMULSTMModel, self).to(device)

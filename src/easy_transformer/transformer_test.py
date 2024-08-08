@@ -24,7 +24,7 @@ def load_data(root_dir):
                 sequences.append(IMUSequence(imu, vi, f"{data_folder}/{imu_file}"))
     return sequences
 
-def evaluate_model(model, sequences, sequence_length, output_size):
+def evaluate_model(model, sequences, sequence_length, output_size, device):
     model.eval()
     total_loss = 0
     all_predictions = []
@@ -39,15 +39,15 @@ def evaluate_model(model, sequences, sequence_length, output_size):
                     # Pad with zeros for initial sequence
                     pad_length = sequence_length - 1 - i
                     imu_seq = np.pad(sequence.imu_data[:i+1], ((pad_length, 0), (0, 0)), mode='constant')
-                    output = torch.zeros(output_size)
+                    output = torch.zeros(output_size, device=device)
                 else:
                     imu_seq = sequence.imu_data[i-sequence_length+1:i+1]
-                    imu_seq = torch.FloatTensor(imu_seq).unsqueeze(0)  # Add batch dimension
+                    imu_seq = torch.FloatTensor(imu_seq).unsqueeze(0).to(device)  # Add batch dimension and move to device
                     output = model(imu_seq).squeeze(0)
                 
                 seq_predictions.append(output.cpu().numpy())
                 
-                loss = torch.nn.functional.mse_loss(output, torch.FloatTensor(seq_targets[i]))
+                loss = torch.nn.functional.mse_loss(output, torch.FloatTensor(seq_targets[i]).to(device))
                 total_loss += loss.item()
             
             seq_predictions = np.array(seq_predictions)
@@ -70,7 +70,7 @@ def evaluate_model(model, sequences, sequence_length, output_size):
     
     return avg_loss, all_predictions, all_targets
 
-def test_model(model, test_root_dir, sequence_length, output_size):
+def test_model(model, test_root_dir, sequence_length, output_size, device):
     print("\nStarting model evaluation...")
 
     # Load and evaluate test data
@@ -80,7 +80,7 @@ def test_model(model, test_root_dir, sequence_length, output_size):
     print(f"Number of sequences: {len(sequences)}")
     print(f"Model Sequence length: {sequence_length}")
 
-    test_loss, predictions, targets = evaluate_model(model, sequences, sequence_length,output_size)
+    test_loss, predictions, targets = evaluate_model(model, sequences, sequence_length, output_size, device)
     print(f"\nOverall Test Loss: {test_loss:.4f}")
     print(f"Predictions shape: {predictions.shape}")
     print(f"Targets shape: {targets.shape}")

@@ -5,6 +5,9 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 
+def get_device():
+    return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 class IMUSequence:
     def __init__(self, imu_file, vi_file, sequence_length):
         imu_data = pd.read_csv(imu_file, header=None).iloc[:, 1:].values
@@ -30,12 +33,14 @@ class IMUDataset(Dataset):
         
         self.sequences = np.array(self.sequences)
         self.targets = np.array(self.targets)
+        self.device = get_device()
 
     def __len__(self):
         return len(self.sequences)
 
     def __getitem__(self, idx):
-        return torch.FloatTensor(self.sequences[idx]), torch.FloatTensor(self.targets[idx])
+        return (torch.FloatTensor(self.sequences[idx]).to(self.device), 
+                torch.FloatTensor(self.targets[idx]).to(self.device))
 
 def load_sequences(root_dir, sequence_length):
     sequences = []

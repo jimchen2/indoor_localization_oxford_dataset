@@ -9,6 +9,9 @@ from torch.utils.tensorboard import SummaryWriter
 import datetime
 import os
 
+def get_device():
+    return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
 def train_and_evaluate(args):
     # Create a custom log directory name
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -32,7 +35,9 @@ def train_and_evaluate(args):
     writer.add_text("Target Shape", str(train_dataset[0][1].shape))
 
     # Initialize the model, loss function, and optimizer
-    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size, args.dropout_rate)
+    device = get_device()
+    print(f"Using device: {device}")
+    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size, args.dropout_rate).to(device)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -65,6 +70,7 @@ def train_and_evaluate(args):
         model.train()
         train_loss = 0
         for batch_idx, (imu_seq, vi_target) in enumerate(train_loader):
+            imu_seq, vi_target = imu_seq.to(device), vi_target.to(device)
             outputs = model(imu_seq)
             loss = criterion(outputs, vi_target)
             
@@ -79,6 +85,7 @@ def train_and_evaluate(args):
         val_loss = 0
         with torch.no_grad():
             for imu_seq, vi_target in val_loader:
+                imu_seq, vi_target = imu_seq.to(device), vi_target.to(device)
                 outputs = model(imu_seq)
                 val_loss += criterion(outputs, vi_target).item()
         
@@ -94,7 +101,8 @@ def train_and_evaluate(args):
         # Save the best model
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), args.model_save_path)
+            torch.save(model.cpu().state_dict(), args.model_save_path)
+            model.to(device)  # Move the model back to the device
             writer.add_scalar("Best_Val_Loss", best_val_loss, epoch + 1)
 
     print("Training completed.")
@@ -103,7 +111,8 @@ def train_and_evaluate(args):
     print("\nStarting model evaluation...")
     
     # Load the best model
-    model.load_state_dict(torch.load(args.model_save_path, map_location=torch.device('cpu'), weights_only=True))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
+    model.to(device)
     model.eval()
 
     test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)

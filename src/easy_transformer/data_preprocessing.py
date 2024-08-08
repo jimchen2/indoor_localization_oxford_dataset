@@ -21,21 +21,21 @@ class IMUSequence:
         self.targets = np.array(self.targets)
 
 class IMUDataset(Dataset):
-    def __init__(self, sequences):
+    def __init__(self, sequences, device):
         self.sequences = []
         self.targets = []
         for seq in sequences:
             self.sequences.extend(seq.sequences)
             self.targets.extend(seq.targets)
         
-        self.sequences = np.array(self.sequences)
-        self.targets = np.array(self.targets)
+        self.sequences = torch.FloatTensor(np.array(self.sequences)).to(device)
+        self.targets = torch.FloatTensor(np.array(self.targets)).to(device)
 
     def __len__(self):
         return len(self.sequences)
 
     def __getitem__(self, idx):
-        return torch.FloatTensor(self.sequences[idx]), torch.FloatTensor(self.targets[idx])
+        return self.sequences[idx], self.targets[idx]
 
 def load_sequences(root_dir, sequence_length):
     sequences = []
@@ -53,12 +53,12 @@ def load_sequences(root_dir, sequence_length):
                 ))
     return sequences
 
-def prepare_data(root_dir, sequence_length, batch_size):
+def prepare_data(root_dir, sequence_length, batch_size, device):
     all_sequences = load_sequences(root_dir, sequence_length)
     train_sequences, val_sequences = train_test_split(all_sequences, test_size=0.1, random_state=42)
 
-    train_dataset = IMUDataset(train_sequences)
-    val_dataset = IMUDataset(val_sequences)
+    train_dataset = IMUDataset(train_sequences, device)
+    val_dataset = IMUDataset(val_sequences, device)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)

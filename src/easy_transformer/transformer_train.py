@@ -10,12 +10,15 @@ import datetime
 import os
 
 def train_and_evaluate(args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
     log_dir = os.path.join("../../logs", f"{current_time}_d_model{args.d_model}_nhead{args.nhead}_layers{args.num_layers}_ff{args.dim_feedforward}_output{args.output_size}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}_pooling{args.pooling}_returnall{args.return_all_positions}")    
     writer = SummaryWriter(log_dir)
 
     # Load data
-    train_loader, val_loader, train_dataset, val_dataset = prepare_data(args.root_dir, args.sequence_length, args.batch_size)
+    train_loader, val_loader, train_dataset, val_dataset = prepare_data(args.root_dir, args.sequence_length, args.batch_size, device)
 
     # Print and log data information
     print(f"Total training samples: {len(train_dataset)}")
@@ -39,7 +42,7 @@ def train_and_evaluate(args):
         dim_feedforward=args.dim_feedforward, 
         output_size=args.output_size, 
         dropout=args.dropout_rate
-    )
+    ).to(device)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -72,6 +75,7 @@ def train_and_evaluate(args):
         model.train()
         train_loss = 0
         for batch_idx, (imu_seq, vi_target) in enumerate(train_loader):
+            imu_seq, vi_target = imu_seq.to(device), vi_target.to(device)
             outputs = model(imu_seq, return_all_positions=args.return_all_positions, pooling=args.pooling)
             if args.return_all_positions:
                 loss = criterion(outputs, vi_target.unsqueeze(1).expand(-1, outputs.size(1), -1))
@@ -91,6 +95,7 @@ def train_and_evaluate(args):
         val_loss = 0
         with torch.no_grad():
             for imu_seq, vi_target in val_loader:
+                imu_seq, vi_target = imu_seq.to(device), vi_target.to(device)
                 outputs = model(imu_seq, return_all_positions=args.return_all_positions, pooling=args.pooling)
                 if args.return_all_positions:
                     val_loss += criterion(outputs, vi_target.unsqueeze(1).expand(-1, outputs.size(1), -1)).item()
@@ -118,10 +123,10 @@ def train_and_evaluate(args):
     print("\nStarting model evaluation...")
     
     # Load the best model
-    model.load_state_dict(torch.load(args.model_save_path, map_location=torch.device('cpu')))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
     model.eval()
 
-    test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)
+    test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size, device)
 
     # Log test results to TensorBoard
     writer.add_scalar("Test/Loss", test_loss, 0)

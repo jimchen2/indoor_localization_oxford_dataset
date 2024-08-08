@@ -41,6 +41,8 @@ class IMUTransformerModel(nn.Module):
     def forward(self, src, return_all_positions=False, pooling='last'):
         # src is shape (batch_size, sequence_length, input_size)
         # example is (128,200,15), won't be much much larger than that
+        device = src.device  # Get the device of the input tensor
+        
         src = self.input_linear(src)
         src = self.input_norm(src)
         src = self.input_activation(src)
