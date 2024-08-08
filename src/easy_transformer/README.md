@@ -8,6 +8,9 @@ So basically run different configs to get an idea what happens
 
 
 ```bash
+# Make sure no bugs
+python transformer_train.py --num_epochs 10
+
 # Baseline configuration
 python transformer_train.py --d_model 32 --nhead 2 --num_layers 1 --dim_feedforward 128 --batch_size 64 --num_epochs 50 --pooling last
 

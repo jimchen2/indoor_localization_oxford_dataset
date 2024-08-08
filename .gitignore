@@ -16,6 +16,7 @@ data/*
 data.zip
 prev_logs/
 lstm_logs
+transformer_logs/
 !data/Oxford Inertial Odometry Dataset/
 data/Oxford Inertial Odometry Dataset/*
 !data/Oxford Inertial Odometry Dataset/.gitkeep

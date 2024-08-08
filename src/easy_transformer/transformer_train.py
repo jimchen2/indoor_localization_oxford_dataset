@@ -14,7 +14,7 @@ def train_and_evaluate(args):
     print(f"Using device: {device}")
 
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = os.path.join("../../logs", f"{current_time}_d_model{args.d_model}_nhead{args.nhead}_layers{args.num_layers}_ff{args.dim_feedforward}_output{args.output_size}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}_pooling{args.pooling}_returnall{args.return_all_positions}")    
+    log_dir = os.path.join("../../transformer_logs", f"{current_time}_d_model{args.d_model}_nhead{args.nhead}_layers{args.num_layers}_ff{args.dim_feedforward}_output{args.output_size}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}_pooling{args.pooling}_returnall{args.return_all_positions}")    
     writer = SummaryWriter(log_dir)
 
     # Load data
@@ -123,7 +123,7 @@ def train_and_evaluate(args):
     print("\nStarting model evaluation...")
     
     # Load the best model
-    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device, weights_only=True))
     model.eval()
 
     test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size, device)
