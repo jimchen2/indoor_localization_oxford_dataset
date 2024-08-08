@@ -13,6 +13,7 @@
 # Ignore all .pyd files
 *.pyd
 data/*
+data.zip
 prev_logs/
 lstm_logs
 !data/Oxford Inertial Odometry Dataset/

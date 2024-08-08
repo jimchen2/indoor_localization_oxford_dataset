@@ -4,6 +4,13 @@ First wget https://s3.amazonaws.com...  (removed due to copyright issues)
 
 In each data fold, there is a raw data subfolder and a syn data subfolder, which represent the raw data collection without synchronisation but with high precise timestep, and the synchronised data but without high precise timestep.
 
+
+## In Google Colab
+
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1-Yx7QA4hbnZ9-NsZzgXvU3nPpmgtSjAw?usp=sharing)
+
+
 **Here I also changed the Oxford Datasets, so I seperated the Oxford into 2 folders for train and test instead of putting the information in each folder.**
 
 Here is the header of the sensor file and ground truth file.

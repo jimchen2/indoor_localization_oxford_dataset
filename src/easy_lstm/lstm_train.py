@@ -111,7 +111,7 @@ def train_and_evaluate(args):
     print("\nStarting model evaluation...")
     
     # Load the best model
-    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device, weights_only=True))
     model.to(device)
     model.eval()
 
