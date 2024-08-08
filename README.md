@@ -116,12 +116,3 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 ## What helped in sequence processing?
 
 By making sure sliding windows doesn't overlap, we saw a massive gain.
-
-## Easy LSTM
-
-So basically this is an intuitive file for LSTM, with minimal configurations and it can be trained 5 minutes on a CPU
-
-```
-
-
-```
