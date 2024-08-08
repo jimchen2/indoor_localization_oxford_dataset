@@ -14,6 +14,7 @@
 *.pyd
 data/*
 prev_logs/
+lstm_logs
 !data/Oxford Inertial Odometry Dataset/
 data/Oxford Inertial Odometry Dataset/*
 !data/Oxford Inertial Odometry Dataset/.gitkeep

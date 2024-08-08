@@ -52,7 +52,7 @@ We need to finetune these
 
 Basically I run these to test 
 
-```sh
+```python
 # Basic configuration:
 python lstm_train.py --sequence_length 100 --hidden_sizes 64 32 --num_epochs 50
 # Longer sequence length
@@ -87,7 +87,7 @@ python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --
 python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 32 --num_epochs 50 --dropout_rate 0.5
 ```
 
-## Tensorboard Results
+## Reports
 
 ![Image](https://blog.jimchen.me/8e6da0ef-e749-440d-8a24-939d726c81e2-1723115444353.jpg)
 ![Image](https://blog.jimchen.me/7abb9b40-a8d4-4d02-be89-81e4deaecef1-1723115455459.jpg)
@@ -98,23 +98,6 @@ python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 32 --num_epochs
 ## More Training and Finetuning
 
 
-```sh
+```
 python lstm_train.py --sequence_length 200 --hidden_sizes 32 --num_epochs 80 --dropout_rate 0.5
-python lstm_train.py --sequence_length 200 --hidden_sizes 32 --num_epochs 50 --dropout 0.2
-# Large Batch
-python lstm_train.py --sequence_length 200 --hidden_sizes 32 --num_epochs 100 --batch_size 128 --dropout_rate 0.2
-python lstm_train.py --sequence_length 200 --hidden_sizes 32 --num_epochs 100 --batch_size 128 --dropout_rate 0.4
-# Large Hidden Size
-python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 50 --dropout_rate 0.2
-
-python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 80 --dropout_rate 0.4
-# Run it twice
-python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 80 --dropout_rate 0.4
-
-python lstm_train.py --sequence_length 200 --hidden_sizes 256 --num_epochs 50 --dropout_rate 0.4
-
-# More Runs
-python lstm_train.py --sequence_length 200 --hidden_sizes 64 --num_epochs 60 --dropout_rate 0.3
-python lstm_train.py --sequence_length 200 --hidden_sizes 96 --num_epochs 80 --dropout_rate 0.4
-python lstm_train.py --sequence_length 200 --hidden_sizes 128 64 --num_epochs 75 --dropout_rate 0.4
 ```
