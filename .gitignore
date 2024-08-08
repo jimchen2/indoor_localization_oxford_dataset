@@ -12,8 +12,8 @@
 
 # Ignore all .pyd files
 *.pyd
-data/
-
+data/*
+!data/Oxford Inertial Odometry Dataset/.gitkeep
 runs/
 logs/
 
