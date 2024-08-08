@@ -1,6 +1,6 @@
 ## Setup
 
-`wget https://public.jimchen.me/other/Oxford%20Inertial%20Odometry%20Dataset_2.0.zip`
+Do wget ....amazonaws.com...  (removed due to copyright issues)
 
 In each data fold, there is a raw data subfolder and a syn data subfolder, which represent the raw data collection without synchronisation but with high precise timestep, and the synchronised data but without high precise timestep.
 
@@ -112,3 +112,16 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 ### MLP Head
 
 - **Prediction**: Final layers to predict translation (x, y, z).
+
+## What helped in sequence processing?
+
+By making sure sliding windows doesn't overlap, we saw a massive gain.
+
+## Easy LSTM
+
+So basically this is an intuitive file for LSTM, with minimal configurations and it can be trained 5 minutes on a CPU
+
+```
+
+
+```
