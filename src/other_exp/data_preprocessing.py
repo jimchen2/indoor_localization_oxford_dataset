@@ -11,13 +11,13 @@ def get_device():
 class IMUSequence:
     def __init__(self, imu_file, vi_file, sequence_length):
 
-        # imu_data = pd.read_csv(imu_file, header=None).iloc[:, list(range(4,16))].values
+        imu_data = pd.read_csv(imu_file, header=None).iloc[:, list(range(4,16))].values
 
-        imu = pd.read_csv(imu_file, header=None)
+        # imu = pd.read_csv(imu_file, header=None)
 
-        imu = imu.iloc[:, list(range(4,7)) + [7,8,9] + list(range(13,16))+[10,11,12]]
-        imu.iloc[:, 3:6] += imu.iloc[:, 9:12].values
-        imu_data = imu.iloc[:, :9].values
+        # imu = imu.iloc[:, list(range(4,7)) + [7,8,9] + list(range(13,16))+[10,11,12]]
+        # imu.iloc[:, 3:6] += imu.iloc[:, 9:12].values
+        # imu_data = imu.iloc[:, :9].values
 
         vi_data = pd.read_csv(vi_file, header=None).iloc[:, 2:5].values  # Only x, y, z
 

@@ -165,4 +165,7 @@ If the sequence is too short then it performs poorly, improving the sequence len
 
 Removing the attitudes make the result better a little bit. Removing the derivation of attitudes(rotation rate) however, makes the result much worse.
 
-Removing the user_acc make the result better a little bit.
+## More Epochs
+
+Somehow if I use more epochs it still improve a lot? Although the Val Loss isn't decreasing by a lot though.
+

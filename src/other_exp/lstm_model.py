@@ -35,7 +35,7 @@ class IMULSTMModel(torch.nn.Module):
     def forward(self, x):
         # Ensure input is on the correct device
         x = x.to(self.device)
-        
+                
         # Initialize hidden and cell states
         h = [torch.zeros(1, x.size(0), hidden_size, device=self.device) for hidden_size in self.hidden_sizes]
         c = [torch.zeros(1, x.size(0), hidden_size, device=self.device) for hidden_size in self.hidden_sizes]
