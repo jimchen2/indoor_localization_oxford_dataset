@@ -169,3 +169,4 @@ Removing the attitudes make the result better a little bit. Removing the derivat
 
 Somehow if I use more epochs it still improve a lot? Although the Val Loss isn't decreasing by a lot though.
 
+## Add LayerNorm to LSTM

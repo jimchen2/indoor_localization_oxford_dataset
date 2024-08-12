@@ -115,18 +115,15 @@ def train_and_evaluate(args):
     model.to(device)
     model.eval()
 
-    test_loss, overall_mse, overall_mae = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)
+    test_loss, predictions, targets, overall_metrics = test_model(model, args.test_root_dir, args.sequence_length, args.output_size)
 
-    # Log test results to TensorBoard
-    writer.add_scalar("Test/Loss", test_loss, 0)
-    writer.add_scalar("Test/MSE", overall_mse, 0)
-    writer.add_scalar("Test/MAE", overall_mae, 0)
+    # Log all metrics
+    for metric, value in overall_metrics.items():
+        writer.add_scalar(f"Test/{metric}", value, 0)
 
-    # Add text summary of test results
-    writer.add_text("Test Results", 
-                    f"Test Loss: {test_loss:.4f}\n"
-                    f"Overall MSE: {overall_mse:.4f}\n"
-                    f"Overall MAE: {overall_mae:.4f}")
+    # Log prediction and target distributions
+    writer.add_histogram("Test/Predictions", predictions, 0)
+    writer.add_histogram("Test/Targets", targets, 0)
 
     print(f"Test results logged to TensorBoard in {log_dir}")
 
