@@ -8,7 +8,7 @@ In each data fold, there is a raw data subfolder and a syn data subfolder, which
 ## In Google Colab
 
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/1-Yx7QA4hbnZ9-NsZzgXvU3nPpmgtSjAw?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jimchen2/indoor_localization_oxford_dataset/blob/master/localization_run.ipynb)
 
 
 **Here I also changed the Oxford Datasets, so I seperated the Oxford into 2 folders for train and test instead of putting the information in each folder.**
