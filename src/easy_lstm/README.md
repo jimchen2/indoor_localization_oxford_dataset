@@ -4,17 +4,6 @@ So basically this is an intuitive file for LSTM, with minimal configurations and
 
 We basically did a really simple thing, like feed everything into LSTM model (split data on the file level)
 
-# **Improvements**
-
-## Variance Too High
-
-If we use the sliding window approach we can easily like make sure they don't overlap to make variance much smaller.
-
-## Sequence Too Short
-
-If the sequence is too short then it performs poorly, improving the sequence length to 200 or 300 drastically improves the performance.
-
-
 ## Handheld Training
 
 As we can see it quickly reaches some benchmark(though not bad)

@@ -8,7 +8,7 @@ In each data fold, there is a raw data subfolder and a syn data subfolder, which
 ## In Google Colab
 
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1-Yx7QA4hbnZ9-NsZzgXvU3nPpmgtSjAw?usp=sharing)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/1-Yx7QA4hbnZ9-NsZzgXvU3nPpmgtSjAw?usp=sharing)
 
 
 **Here I also changed the Oxford Datasets, so I seperated the Oxford into 2 folders for train and test instead of putting the information in each folder.**
@@ -149,3 +149,20 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 2. I don't think pure TCN is going to work. Maybe utilizing parallel CNNs for input layer might be a good idea.
 3. I am not changing the `Bx`, `By` `Bz` into other forms because I think they yield similar results with all these models(the models automatically fits it), you can do it if you want
 4. I am using the layernorm in the start of the model instead of scaling it manually
+
+
+# **Improvements**
+
+## Variance Too High
+
+If we use the sliding window approach we can easily like make sure they don't overlap to make variance much smaller.
+
+## Sequence Too Short
+
+If the sequence is too short then it performs poorly, improving the sequence length to 200 or 300 drastically improves the performance.
+
+## Remove Parts of IMU
+
+Removing the attitudes make the result better a little bit. Removing the derivation of attitudes(rotation rate) however, makes the result much worse.
+
+Removing the user_acc make the result better a little bit.

@@ -23,5 +23,6 @@ data/Oxford Inertial Odometry Dataset/*
 runs/
 logs/
 logs.zip
+other_exp_logs/
 
 best_model.pth
