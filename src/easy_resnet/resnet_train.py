@@ -14,7 +14,7 @@ def get_device():
 
 def train_and_evaluate(args):
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = os.path.join("../../resnet_logs", f"{current_time}_input{args.input_size}_channels{'-'.join(map(str, args.channels))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.input_dropout}_{args.block1_dropout}_{args.block2_dropout}_{args.output_dropout}_sequencelength{args.sequence_length}")    
+    log_dir = os.path.join("../../other_exp_logs", f"{current_time}_input{args.input_size}_channels{'-'.join(map(str, args.channels))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
     writer = SummaryWriter(log_dir)
 
     train_loader, val_loader, train_dataset, val_dataset = prepare_data(args.root_dir, args.sequence_length, args.batch_size)
@@ -36,10 +36,10 @@ def train_and_evaluate(args):
 
     # Define dropout rates for different parts of the network
     dropout_rates = {
-        'input': args.input_dropout,
-        'block1': [args.block1_dropout] * len(args.group_sizes),
-        'block2': [args.block2_dropout] * len(args.group_sizes),
-        'output': args.output_dropout
+        'input': args.dropout_rate,
+        'block1': [args.dropout_rate] * len(args.group_sizes),
+        'block2': [args.dropout_rate] * len(args.group_sizes),
+        'output': args.dropout_rate
     }
 
     model = IMUResNetModel(args.input_size, args.channels, args.output_size, dropout_rates, args.group_sizes).to(device)    
@@ -115,7 +115,7 @@ def train_and_evaluate(args):
 
     print("\nStarting model evaluation...")
     
-    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device, weights_only=True))
     model.to(device)
     model.eval()
 
@@ -141,10 +141,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size")
     parser.add_argument("--num_epochs", type=int, required=True, help="Number of epochs")
-    parser.add_argument("--input_dropout", type=float, default=0.2, help="Dropout rate for input layer")
-    parser.add_argument("--block1_dropout", type=float, default=0.3, help="Dropout rate for block1")
-    parser.add_argument("--block2_dropout", type=float, default=0.4, help="Dropout rate for block2")
-    parser.add_argument("--output_dropout", type=float, default=0.5, help="Dropout rate for output layer")
+    parser.add_argument("--dropout_rate", type=float, default=0.4, help="Dropout rate")
     parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_resnet_model.pth", help="Path to save the best model")
     parser.add_argument("--test_root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld_test", help="Root directory of the test dataset")
     parser.add_argument("--group_sizes", type=int, nargs='+', default=[2, 2, 2], help="Group sizes for ResNet layers")

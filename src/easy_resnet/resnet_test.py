@@ -28,6 +28,7 @@ def load_data(root_dir):
                 sequences.append(IMUSequence(imu, vi, f"{data_folder}/{imu_file}"))
     return sequences
 
+
 def evaluate_model(model, sequences, sequence_length, output_size):
     device = get_device()
     model.to(device)
@@ -45,11 +46,21 @@ def evaluate_model(model, sequences, sequence_length, output_size):
                 if i < sequence_length - 1:
                     pad_length = sequence_length - 1 - i
                     imu_seq = np.pad(sequence.imu_data[:i+1], ((pad_length, 0), (0, 0)), mode='constant')
-                    output = torch.zeros(output_size, device=device)
                 else:
                     imu_seq = sequence.imu_data[i-sequence_length+1:i+1]
-                    imu_seq = torch.FloatTensor(imu_seq).unsqueeze(0).to(device)
-                    output = model(imu_seq).squeeze(0)
+                
+                # Prepare the input tensor
+                imu_seq = torch.FloatTensor(imu_seq).unsqueeze(0).to(device)
+                imu_seq = imu_seq.transpose(1, 2)  # Transpose to [1, 12, 200]
+                
+                # Ensure the input has the correct shape
+                if imu_seq.shape != (1, 12, sequence_length):
+                    imu_seq = imu_seq.squeeze()  # Remove any extra dimensions
+                    if imu_seq.shape != (12, sequence_length):
+                        raise ValueError(f"Unexpected input shape: {imu_seq.shape}")
+                    imu_seq = imu_seq.unsqueeze(0)  # Add batch dimension back
+                
+                output = model(imu_seq).squeeze(0)
                 
                 seq_predictions.append(output.cpu().numpy())
                 
@@ -75,6 +86,7 @@ def evaluate_model(model, sequences, sequence_length, output_size):
     overall_metrics = calculate_metrics(all_predictions, all_targets)
         
     return avg_loss, all_predictions, all_targets, overall_metrics
+
 
 def test_model(model, test_root_dir, sequence_length, output_size):
     print("\nStarting model evaluation...")
