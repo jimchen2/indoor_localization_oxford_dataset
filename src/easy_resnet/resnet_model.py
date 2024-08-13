@@ -9,7 +9,7 @@ class ResidualBlock(nn.Module):
         super(ResidualBlock, self).__init__()
         self.conv1 = nn.Conv1d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
         self.bn1 = nn.BatchNorm1d(out_channels)
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         self.conv2 = nn.Conv1d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm1d(out_channels)
         
@@ -33,7 +33,7 @@ class IMUResNetModel(nn.Module):
         
         self.conv1 = nn.Conv1d(input_size, channels[0], kernel_size=7, stride=2, padding=3, bias=False)
         self.bn1 = nn.BatchNorm1d(channels[0])
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
         
         self.layers = nn.ModuleList()
@@ -70,7 +70,6 @@ class IMUResNetModel(nn.Module):
         
         x = self.avgpool(x)
         x = x.view(x.size(0), -1)
-        x = self.dropout(x)
         x = self.fc(x)
         
         return x

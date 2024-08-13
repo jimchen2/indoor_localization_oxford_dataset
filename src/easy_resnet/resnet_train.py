@@ -139,7 +139,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size")
     parser.add_argument("--num_epochs", type=int, required=True, help="Number of epochs")
-    parser.add_argument("--dropout_rate", type=float, default=0.2, help="Dropout rate")
+    parser.add_argument("--dropout_rate", type=float, default=0.3, help="Dropout rate")
     parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_resnet_model.pth", help="Path to save the best model")
     parser.add_argument("--test_root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld_test", help="Root directory of the test dataset")
 
