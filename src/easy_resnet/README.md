@@ -15,7 +15,6 @@ python resnet_train.py --num_epochs 50
 
 
 ```bash
-#!/bin/bash
 
 # Baseline configuration
 python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 100 --dropout_rate 0.3
