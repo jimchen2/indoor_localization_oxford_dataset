@@ -8,84 +8,67 @@ I removed the attitude data
 
 
 ```bash
-python resnet_train.py --num_epochs 50
+# 1. Basic run
+python resnet_train.py --num_epochs 50 --channels 16 32 64 --group_sizes 2 2 2
 
+# 2. Increase epochs
+python resnet_train.py --num_epochs 100 --channels 16 32 64 --group_sizes 2 2 2
+
+# 3. Decrease epochs
+python resnet_train.py --num_epochs 30 --channels 16 32 64 --group_sizes 2 2 2
+
+# 4. Increase channels
+python resnet_train.py --num_epochs 50 --channels 32 64 128 --group_sizes 2 2 2
+
+# 5. Decrease channels
+python resnet_train.py --num_epochs 50 --channels 8 16 32 --group_sizes 2 2 2
+
+# 6. Increase group sizes
+python resnet_train.py --num_epochs 50 --channels 16 32 64 --group_sizes 3 3 3
+
+# 7. Decrease group sizes
+python resnet_train.py --num_epochs 50 --channels 16 32 64 --group_sizes 1 1 1
+
+# 9. Decrease dropout rates
+python resnet_train.py --num_epochs 50 --channels 16 32 64 --group_sizes 2 2 2 --input_dropout 0.1 --block1_dropout 0.2 --block2_dropout 0.3 --output_dropout 0.4
+
+# 10. Mix of changes
+python resnet_train.py --num_epochs 50 --channels 24 48 96 --group_sizes 2 3 2 --input_dropout 0.15 --block1_dropout 0.25 --block2_dropout 0.35 --output_dropout 0.45
+
+# 11. Two channels with increasing width
+python resnet_train.py --num_epochs 50 --channels 32 64 --group_sizes 2 2
+
+# 12. Two channels with decreasing width
+python resnet_train.py --num_epochs 50 --channels 64 32 --group_sizes 2 2
 ```
 
-## Hyperparams in ResNet
+## Hyperparams in 1D ResNet
 
 Input Block:
 
-    7x7 Conv, 64 filters, stride 2
-    BatchNorm
+    1D Conv, base_plane filters, kernel_size 7, stride 2
+    BatchNorm1D
     ReLU
-    3x3 Max Pooling, stride 2
-    Dropout 
+    1D Max Pooling, kernel_size 3, stride 2
 
-Many Blocks (each block is either Bottleneck or Basic, with increasing channels and decreasing spatial dimensions across stages)
+Many Blocks (BasicBlock1D, with increasing channels across stages)
 
-Bottleneck:
+BasicBlock1D:
 
-    1x1 Conv (input channels -> reduced channels)
-    BatchNorm -> ReLU
-    3x3 Conv (reduced channels -> reduced channels)
-    BatchNorm -> ReLU
-    1x1 Conv (reduced channels -> increased channels)
-    BatchNorm
+    3x1 Conv1D (in_planes -> out_planes)
+    BatchNorm1D -> ReLU
+    3x1 Conv1D (out_planes -> out_planes)
+    BatchNorm1D
     Add input to the output (skip connection, with projection if needed)
     ReLU
-    Dropout
-
-Basic:
-
-    3x3 Conv (input channels -> output channels)
-    BatchNorm -> ReLU
-    Dropout 
-    3x3 Conv (output channels -> output channels)
-    BatchNorm
-    Add input to the output (skip connection, with projection if needed)
-    ReLU
-    Dropout 
 
 Output Block:
-
-    Global Average Pooling
+    Adaptive Average Pooling
+    Flatten
+    Fully Connected layer (in_planes -> fc_dim)
+    ReLU
     Dropout
-    Fully Connected layer (num_features -> num_classes)
-    Softmax activation
-
-
-
-```
-hyperparams = {
-    # Architecture
-    'num_blocks': [3, 4, 6, 3],  # Number of blocks in each stage
-    'block_type': ['Bottleneck', 'Basic'],  # Choose block type for each stage
-    'channels': [64, 128, 256, 512],  # Channels in each stage
-
-    # Input Block
-    'initial_filters': 64,
-    'initial_kernel_size': 7,
-    'initial_stride': 2,
-    'pool_size': 3,
-    'pool_stride': 2,
-
-    # Dropout
-    'dropout_rate_conv': 0.1,
-    'dropout_rate_fc': 0.5,
-
-    # Training
-    'learning_rate': 0.001,
-    'batch_size': 32,
-    'epochs': 100,
-    'optimizer': 'Adam',
-    'weight_decay': 0.0001,
-
-    # Data Augmentation
-    'use_augmentation': True,
-    'rotation_range': 15,
-    'width_shift_range': 0.1,
-    'height_shift_range': 0.1,
-    'horizontal_flip': True,
-}
-```
+    Fully Connected layer (fc_dim -> fc_dim)
+    ReLU
+    Dropout
+    Fully Connected layer (fc_dim -> num_outputs)
