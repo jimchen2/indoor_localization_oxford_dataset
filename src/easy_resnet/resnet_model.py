@@ -1,79 +1,149 @@
 import torch
 import torch.nn as nn
 
-def get_device():
-    return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+def conv3(in_planes, out_planes, kernel_size, stride=1, dilation=1):
+    return nn.Conv1d(in_planes, out_planes, kernel_size=kernel_size, stride=stride,
+                     padding=kernel_size // 2, bias=False)
 
-class ResidualBlock(nn.Module):
-    def __init__(self, in_channels, out_channels, stride=1):
-        super(ResidualBlock, self).__init__()
-        self.conv1 = nn.Conv1d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm1d(out_channels)
-        self.relu = nn.ReLU()
-        self.conv2 = nn.Conv1d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn2 = nn.BatchNorm1d(out_channels)
-        
-        self.residual = nn.Conv1d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False)
-        self.bn_residual = nn.BatchNorm1d(out_channels)
+class BasicBlock1D(nn.Module):
+    expansion = 1
+
+    def __init__(self, in_planes, out_planes, kernel_size, stride=1, dilation=1, downsample=None):
+        super(BasicBlock1D, self).__init__()
+        self.conv1 = conv3(in_planes, out_planes, kernel_size, stride, dilation)
+        self.bn1 = nn.BatchNorm1d(out_planes)
+        self.relu = nn.ReLU(inplace=True)
+        self.conv2 = conv3(out_planes, out_planes, kernel_size)
+        self.bn2 = nn.BatchNorm1d(out_planes)
+        self.stride = stride
+        self.downsample = downsample
 
     def forward(self, x):
-        out = self.relu(self.bn1(self.conv1(x)))
-        out = self.bn2(self.conv2(out))
-        residual = self.bn_residual(self.residual(x))
+        residual = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+
+        if self.downsample is not None:
+            residual = self.downsample(x)
+
         out += residual
         out = self.relu(out)
+
         return out
 
-class IMUResNetModel(nn.Module):
-    def __init__(self, input_size, channels, output_size, dropout_rate=0.5):
-        super(IMUResNetModel, self).__init__()
-        self.device = get_device()
+class FCOutputModule(nn.Module):
+    def __init__(self, in_planes, num_outputs, **kwargs):
+        super(FCOutputModule, self).__init__()
+        fc_dim = kwargs.get('fc_dim', 1024)
+        dropout = kwargs.get('dropout', 0.5)
+        self.adaptive_pool = nn.AdaptiveAvgPool1d(1)
         
-        self.normalize = nn.BatchNorm1d(input_size)
-        
-        self.conv1 = nn.Conv1d(input_size, channels[0], kernel_size=7, stride=2, padding=3, bias=False)
-        self.bn1 = nn.BatchNorm1d(channels[0])
-        self.relu = nn.ReLU()
-        self.maxpool = nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
-        
-        self.layers = nn.ModuleList()
-        for i in range(len(channels) - 1):
-            stride = 2 if i > 0 else 1
-            self.layers.append(self._make_layer(channels[i], channels[i+1], 2, stride))
-        
-        self.avgpool = nn.AdaptiveAvgPool1d(1)
-        self.fc = nn.Linear(channels[-1], output_size)
-        self.dropout = nn.Dropout(dropout_rate)
-        
-        self.to(self.device)
-        
-    def _make_layer(self, in_channels, out_channels, num_blocks, stride=1):
-        layers = []
-        layers.append(ResidualBlock(in_channels, out_channels, stride))
-        for _ in range(1, num_blocks):
-            layers.append(ResidualBlock(out_channels, out_channels))
-        return nn.Sequential(*layers)
-    
-    def forward(self, x):
-        x = x.to(self.device)
-        x = x.permute(0, 2, 1)
-        
-        x = self.normalize(x)
-        
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu(x)
-        x = self.maxpool(x)
-        
-        for layer in self.layers:
-            x = layer(x)
-        
-        x = self.avgpool(x)
-        x = x.view(x.size(0), -1)
-        x = self.fc(x)
-        
-        return x
+        self.fc = nn.Sequential(
+            nn.Linear(in_planes, fc_dim),
+            nn.ReLU(True),
+            nn.Dropout(dropout),
+            nn.Linear(fc_dim, fc_dim),
+            nn.ReLU(True),
+            nn.Dropout(dropout),
+            nn.Linear(fc_dim, num_outputs))
 
-    def to(self, device):
-        self.device = device
-        return super(IMUResNetModel, self).to(device)
+    def forward(self, x):
+        x = self.adaptive_pool(x)
+        x = x.view(x.size(0), -1)
+        y = self.fc(x)
+        return y
+    
+
+class ResNet1D(nn.Module):
+    def __init__(self, num_inputs, num_outputs, block_type, group_sizes, base_plane=64, output_block=None,
+                 zero_init_residual=False, **kwargs):
+        super(ResNet1D, self).__init__()
+        self.base_plane = base_plane
+        self.inplanes = self.base_plane
+
+        self.input_block = nn.Sequential(
+            nn.Conv1d(num_inputs, self.inplanes, kernel_size=7, stride=2, padding=3, bias=False),
+            nn.BatchNorm1d(self.inplanes),
+            nn.ReLU(inplace=True),
+            nn.MaxPool1d(kernel_size=3, stride=2, padding=1)
+        )
+
+        self.planes = [self.base_plane * (2 ** i) for i in range(len(group_sizes))]
+        kernel_size = kwargs.get('kernel_size', 3)
+        strides = [1] + [2] * (len(group_sizes) - 1)
+        dilations = [1] * len(group_sizes)
+        groups = [self._make_residual_group1d(block_type, self.planes[i], kernel_size, group_sizes[i],
+                                              strides[i], dilations[i])
+                  for i in range(len(group_sizes))]
+        self.residual_groups = nn.Sequential(*groups)
+
+        if output_block is None:
+            self.output_block = nn.Sequential(
+                nn.AdaptiveAvgPool1d(1),
+                nn.Flatten(),
+                nn.Linear(self.planes[-1] * block_type.expansion, num_outputs)
+            )
+        else:
+            self.output_block = output_block(self.planes[-1] * block_type.expansion, num_outputs, **kwargs)
+
+        self._initialize(zero_init_residual)
+
+    def _make_residual_group1d(self, block_type, planes, kernel_size, blocks, stride=1, dilation=1):
+        downsample = None
+        if stride != 1 or self.inplanes != planes * block_type.expansion:
+            downsample = nn.Sequential(
+                nn.Conv1d(self.inplanes, planes * block_type.expansion, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm1d(planes * block_type.expansion))
+        layers = []
+        layers.append(block_type(self.inplanes, planes, kernel_size=kernel_size,
+                                 stride=stride, dilation=dilation, downsample=downsample))
+        self.inplanes = planes * block_type.expansion
+        for _ in range(1, blocks):
+            layers.append(block_type(self.inplanes, planes, kernel_size=kernel_size))
+
+        return nn.Sequential(*layers)
+
+    def _initialize(self, zero_init_residual):
+        for m in self.modules():
+            if isinstance(m, nn.Conv1d):
+                nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            elif isinstance(m, nn.BatchNorm1d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
+            elif isinstance(m, nn.Linear):
+                nn.init.normal_(m.weight, 0, 0.01)
+                nn.init.constant_(m.bias, 0)
+
+        if zero_init_residual:
+            for m in self.modules():
+                if isinstance(m, BasicBlock1D):
+                    nn.init.constant_(m.bn2.weight, 0)
+
+
+    def forward(self, x):
+        x = self.input_block(x)
+        x = self.residual_groups(x)
+        x = self.output_block(x)
+        return x
+    
+class IMUResNetModel(nn.Module):
+    def __init__(self, input_size, channels, output_size, dropout_rate, group_sizes):
+        super(IMUResNetModel, self).__init__()
+        self.resnet = ResNet1D(
+            num_inputs=input_size,
+            num_outputs=output_size,
+            block_type=BasicBlock1D,
+            group_sizes=group_sizes,
+            base_plane=channels[0],
+            output_block=FCOutputModule,
+            dropout=dropout_rate,
+            fc_dim=1024  
+        )
+
+    def forward(self, x):
+        return self.resnet(x)

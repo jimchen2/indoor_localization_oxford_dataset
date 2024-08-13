@@ -2,12 +2,11 @@ import argparse
 import torch
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # FATAL
-from tcn.tcn_model import IMULSTMModel
+from tcn_model import IMUTCNModel
 from data_preprocessing import prepare_data
-from tcn.tcn import test_model
+from tcn_test import test_model
 from torch.utils.tensorboard import SummaryWriter
 import datetime
-import os
 
 def get_device():
     return torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -15,7 +14,7 @@ def get_device():
 def train_and_evaluate(args):
     # Create a custom log directory name
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = os.path.join("../../other_exp_logs", f"{current_time}_input{args.input_size}_hidden{'-'.join(map(str, args.hidden_sizes))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
+    log_dir = os.path.join("../../other_exp_logs", f"{current_time}_input{args.input_size}_channels{'-'.join(map(str, args.num_channels))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
     writer = SummaryWriter(log_dir)
 
     # Load data
@@ -37,7 +36,7 @@ def train_and_evaluate(args):
     # Initialize the model, loss function, and optimizer
     device = get_device()
     print(f"Using device: {device}")
-    model = IMULSTMModel(args.input_size, args.hidden_sizes, args.output_size, args.dropout_rate).to(device)
+    model = IMUTCNModel(args.input_size, args.num_channels, args.kernel_size, args.output_size, args.dropout_rate).to(device)
     criterion = torch.nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=args.learning_rate)
 
@@ -111,7 +110,7 @@ def train_and_evaluate(args):
     print("\nStarting model evaluation...")
     
     # Load the best model
-    model.load_state_dict(torch.load(args.model_save_path, map_location=device, weights_only=True))
+    model.load_state_dict(torch.load(args.model_save_path, map_location=device))
     model.to(device)
     model.eval()
 
@@ -130,17 +129,18 @@ def train_and_evaluate(args):
     writer.close()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Train and evaluate LSTM model for IMU data")
+    parser = argparse.ArgumentParser(description="Train and evaluate TCN model for IMU data")
     parser.add_argument("--root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld", help="Root directory of the dataset")
-    parser.add_argument("--sequence_length", type=int, default=100, help="Sequence length for LSTM input")
-    parser.add_argument("--input_size", type=int, default=15, help="Number of features in IMU data")
-    parser.add_argument("--hidden_sizes", type=int, nargs='+', default=[64, 32], help="Hidden sizes of LSTM layers")
+    parser.add_argument("--sequence_length", type=int, default=100, help="Sequence length for TCN input")
+    parser.add_argument("--input_size", type=int, default=12, help="Number of features in IMU data")
+    parser.add_argument("--num_channels", type=int, nargs='+', default=[64, 32], help="Number of channels in each TCN layer")
+    parser.add_argument("--kernel_size", type=int, default=3, help="Kernel size for TCN")
     parser.add_argument("--output_size", type=int, default=3, help="Output size (x, y, z)")
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size")
     parser.add_argument("--num_epochs", type=int, required=True, help="Number of epochs")
     parser.add_argument("--dropout_rate", type=float, default=0.2, help="Dropout rate")
-    parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_lstm_model.pth", help="Path to save the best model")
+    parser.add_argument("--model_save_path", type=str, default="../../model/best_imu_tcn_model.pth", help="Path to save the best model")
     parser.add_argument("--test_root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld_test", help="Root directory of the test dataset")
 
     args = parser.parse_args()
