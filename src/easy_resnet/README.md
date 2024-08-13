@@ -11,3 +11,11 @@ I removed the attitude data
 python resnet_train.py --num_epochs 50
 
 ```
+
+## Hyperparams in ResNet
+
+
+Depth: Number of layers
+Block type: Basic or Bottleneck
+Width: Number of channels in each layer
+Stride: Controls downsampling
