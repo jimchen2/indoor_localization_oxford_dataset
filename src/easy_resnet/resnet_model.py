@@ -13,14 +13,17 @@ class ResidualBlock(nn.Module):
         self.conv2 = nn.Conv1d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm1d(out_channels)
         
-        self.residual = nn.Conv1d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False)
-        self.bn_residual = nn.BatchNorm1d(out_channels)
+        self.shortcut = nn.Sequential()
+        if stride != 1 or in_channels != out_channels:
+            self.shortcut = nn.Sequential(
+                nn.Conv1d(in_channels, out_channels, kernel_size=1, stride=stride, bias=False),
+                nn.BatchNorm1d(out_channels)
+            )
 
     def forward(self, x):
         out = self.relu(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
-        residual = self.bn_residual(self.residual(x))
-        out += residual
+        out += self.shortcut(x)
         out = self.relu(out)
         return out
 
