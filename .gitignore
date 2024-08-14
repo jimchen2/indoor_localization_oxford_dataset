@@ -25,5 +25,6 @@ logs/
 logs.zip
 other_exp_logs/
 resnet_logs/
+data1.zip
 
 best_model.pth
