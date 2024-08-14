@@ -151,6 +151,16 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 4. I am using the layernorm in the start of the model instead of scaling it manually
 
 
+
+## Tensorboard data on S3
+
+```
+https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/transformer_logs.zip
+https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/lstm_logs.zip
+https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/resnet_logs.zip
+```
+
+
 # **Improvements**
 
 ## Variance Too High
@@ -170,3 +180,5 @@ Removing the attitudes make the result better a little bit. Removing the derivat
 Somehow if I use more epochs it still improve a lot? Although the Val Loss isn't decreasing by a lot though.
 
 ## Add LayerNorm to LSTM
+
+

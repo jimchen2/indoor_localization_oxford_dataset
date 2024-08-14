@@ -147,7 +147,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train and evaluate Transformer model for IMU data")
     parser.add_argument("--root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld", help="Root directory of the dataset")
     parser.add_argument("--sequence_length", type=int, default=200, help="Sequence length for Transformer input")
-    parser.add_argument("--input_size", type=int, default=15, help="Number of features in IMU data")
+    parser.add_argument("--input_size", type=int, default=12, help="Number of features in IMU data")
     parser.add_argument("--d_model", type=int, default=64, help="Dimension of the model")
     parser.add_argument("--nhead", type=int, default=2, help="Number of heads in multi-head attention")
     parser.add_argument("--num_layers", type=int, default=1, help="Number of transformer layers")

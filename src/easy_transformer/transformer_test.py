@@ -19,7 +19,7 @@ def load_data(root_dir):
             vi_files = sorted([f for f in os.listdir(folder_path) if f.startswith('vi')])
             
             for imu_file, vi_file in zip(imu_files, vi_files):
-                imu = pd.read_csv(os.path.join(folder_path, imu_file), header=None).iloc[:, 1:].values
+                imu = pd.read_csv(os.path.join(folder_path, imu_file), header=None).iloc[:, list(range(4,16))].values
                 vi = pd.read_csv(os.path.join(folder_path, vi_file), header=None).iloc[:, 2:5].values
                 sequences.append(IMUSequence(imu, vi, f"{data_folder}/{imu_file}"))
     return sequences

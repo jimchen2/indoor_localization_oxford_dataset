@@ -133,7 +133,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train and evaluate LSTM model for IMU data")
     parser.add_argument("--root_dir", type=str, default="../../data/Oxford Inertial Odometry Dataset/handheld", help="Root directory of the dataset")
     parser.add_argument("--sequence_length", type=int, default=100, help="Sequence length for LSTM input")
-    parser.add_argument("--input_size", type=int, default=15, help="Number of features in IMU data")
+    parser.add_argument("--input_size", type=int, default=12, help="Number of features in IMU data")
     parser.add_argument("--hidden_sizes", type=int, nargs='+', default=[64, 32], help="Hidden sizes of LSTM layers")
     parser.add_argument("--output_size", type=int, default=3, help="Output size (x, y, z)")
     parser.add_argument("--learning_rate", type=float, default=0.001, help="Learning rate")

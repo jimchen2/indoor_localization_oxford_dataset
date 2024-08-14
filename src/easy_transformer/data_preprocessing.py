@@ -7,7 +7,8 @@ from sklearn.model_selection import train_test_split
 
 class IMUSequence:
     def __init__(self, imu_file, vi_file, sequence_length):
-        imu_data = pd.read_csv(imu_file, header=None).iloc[:, 1:].values
+        imu_data = pd.read_csv(imu_file, header=None).iloc[:, list(range(4,16))].values
+
         vi_data = pd.read_csv(vi_file, header=None).iloc[:, 2:5].values  # Only x, y, z
 
         self.sequences = []
