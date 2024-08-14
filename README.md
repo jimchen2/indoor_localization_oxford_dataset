@@ -158,7 +158,31 @@ Epoch [2/49], Train MSE (denorm): 0.1589, Test MSE (denorm): 3.4956
 https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/transformer_logs.zip
 https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/lstm_logs.zip
 https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/resnet_logs.zip
+https://jimchen4214-public.s3.us-east-1.amazonaws.com/other/all_logs.zip
 ```
+
+## Final Training 
+
+
+I added up the Handheld, Trolley, Running, Walking, Handbag, Pocket, and used all my models to train it
+
+See `run.sh`
+
+
+## Results
+
+![Image](https://blog.jimchen.me/d10b04db-5da2-4761-b4a6-7ba53bf5a3c1-1723629107845.jpg)
+
+![Image](https://blog.jimchen.me/c859a858-980c-49d3-915e-cbdd1a54f0b2-1723629119947.jpg)
+
+
+![Image](https://blog.jimchen.me/260d64df-743e-40b4-b4da-213a9b6dfa31-1723629174675.jpg)
+
+![Image](https://blog.jimchen.me/cf56845b-560a-4ab6-a24c-5a762186f4e2-1723629188313.jpg)
+
+![Image](https://blog.jimchen.me/00708dc9-ca4e-44c3-9a0f-cdd5b6d44066-1723629155106.jpg)
+![Image](https://blog.jimchen.me/a555953f-4ca3-4cd2-80ad-21a491a25f8a-1723629209985.jpg)
+
 
 
 # **Improvements**
