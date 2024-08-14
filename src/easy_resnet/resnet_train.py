@@ -15,7 +15,7 @@ def get_device():
 def train_and_evaluate(args):
     # Create a custom log directory name
     current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    log_dir = os.path.join("../../other_exp_logs", f"{current_time}_input{args.input_size}_channels{'-'.join(map(str, args.channels))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
+    log_dir = os.path.join("../../resnet_logs", f"{current_time}_input{args.input_size}_channels{'-'.join(map(str, args.channels))}_output{args.output_size}_lr{args.learning_rate}_batch{args.batch_size}_dropout{args.dropout_rate}_sequencelength{args.sequence_length}")    
     writer = SummaryWriter(log_dir)
 
     # Load data

@@ -4,6 +4,7 @@ python -m venv env
 source env/bin/activate
 cd indoor_localization_oxford_dataset
 pip install -r requirements.txt
+sudo apt install unzip
 
 
 rm -r data
