@@ -1,6 +1,7 @@
 cd ~
 git clone https://github.com/jimchen2/indoor_localization_oxford_dataset
 python -m venv env
+cd ~
 source env/bin/activate
 cd indoor_localization_oxford_dataset
 pip install -r requirements.txt
