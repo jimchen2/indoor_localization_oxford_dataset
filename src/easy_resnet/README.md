@@ -80,3 +80,11 @@ Multiple layers of ResidualBlocks, with increasing channel sizes:
 - Flatten
 - Dropout
 - Fully Connected layer (channels[-1] -> output_size)
+
+
+## Results
+
+![Image](https://blog.jimchen.me/fe378e19-0834-4bf1-b3e4-f9519ebc77ea-1723601717097.jpg)
+![Image](https://blog.jimchen.me/da6e2606-7c3e-4b75-8d6d-bdfe388359bc-1723601727168.jpg)
+![Image](https://blog.jimchen.me/1e8c2845-3163-466a-b3a8-7f4f369c22bc-1723601757095.jpg)
+![Image](https://blog.jimchen.me/7adc010d-ce16-462d-bbae-355d4a736165-1723601765921.jpg)
