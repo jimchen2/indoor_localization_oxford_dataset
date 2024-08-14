@@ -15,36 +15,38 @@ python resnet_train.py --num_epochs 50
 
 
 ```bash
-
 # Baseline configuration
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 100 --dropout_rate 0.3
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 50 --dropout_rate 0.3
+
+# Dropout Increase
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 50 --dropout_rate 0.4
 
 # Longer sequence length
-python resnet_train.py --sequence_length 300 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 100 --dropout_rate 0.3
-
-# Smaller learning rate
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.0005 --batch_size 32 --num_epochs 150 --dropout_rate 0.3
+python resnet_train.py --sequence_length 300 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 50 --dropout_rate 0.3
 
 # Larger batch size
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 64 --num_epochs 100 --dropout_rate 0.3
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 64 --num_epochs 50 --dropout_rate 0.4
+
+# Smaller batch size
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 16 --num_epochs 50 --dropout_rate 0.4
 
 # Higher dropout rate
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 100 --dropout_rate 0.5
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 50 --dropout_rate 0.5
 
 # Deeper network
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 512 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 120 --dropout_rate 0.3
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 64 128 256 512 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 60 --dropout_rate 0.4
 
 # Wider network
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 128 256 512 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 100 --dropout_rate 0.3
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 128 256 512 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 50 --dropout_rate 0.4
 
 # Shorter sequence length with larger batch size
-python resnet_train.py --sequence_length 150 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 128 --num_epochs 100 --dropout_rate 0.3
+python resnet_train.py --sequence_length 150 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.001 --batch_size 128 --num_epochs 50 --dropout_rate 0.4
 
 # Longer sequence length with smaller learning rate
-python resnet_train.py --sequence_length 400 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.0002 --batch_size 32 --num_epochs 200 --dropout_rate 0.3
+python resnet_train.py --sequence_length 400 --input_size 12 --channels 64 128 256 --output_size 3 --learning_rate 0.0002 --batch_size 32 --num_epochs 100 --dropout_rate 0.4
 
 # Shallow network with higher dropout
-python resnet_train.py --sequence_length 200 --input_size 12 --channels 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 150 --dropout_rate 0.6
+python resnet_train.py --sequence_length 200 --input_size 12 --channels 128 256 --output_size 3 --learning_rate 0.001 --batch_size 32 --num_epochs 60 --dropout_rate 0.6
 ```
 
 
